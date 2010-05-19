@@ -1,7 +1,14 @@
+#ifndef LOGGING_H
+#define LOGGING_H
+
 #include <iostream>
 #include <sstream>
-#include <time.h>
 #include <iomanip>
+#ifdef _WIN32
+	#include <time.h>
+#else
+	#include <sys/time.h>
+#endif
 
 enum TLogLevel {logERROR, logWARNING, logINFO};
 
@@ -22,7 +29,8 @@ private:
    TLogLevel messageLevel;
 };
 
-/*
+#ifdef _WIN32
+
 #include <windows.h>
 template <typename OutputPolicy>
 void Log<OutputPolicy>::NowTime()
@@ -35,22 +43,27 @@ void Log<OutputPolicy>::NowTime()
 	os << std::setw(2) << st.wHour << ":" << std::setw(2) << st.wMinute << ":" << std::setw(2) << st.wSecond;
 	os << "." << std::setw(3) << st.wMilliseconds;
 } 
-*/
-void Log::NowTime()
+
+#else
+
+template <typename OutputPolicy>
+void Log<OutputPolicy>::NowTime()
 {
 	time_t now;
 	time(&now);
 	struct tm *st;
 	st = localtime(&now);
-	struct timeval *tv;
+	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	int ms = tv->tv_usec / 1000;
+	int ms = tv.tv_usec / 1000;
 
 	os.fill('0');
 	os << std::setw(2) << st->tm_mday << "-" << std::setw(2) << st->tm_mon << "-" << std::setw(4) << st->tm_year + 1700 << " ";
 	os << std::setw(2) << st->tm_hour << ":" << std::setw(2) << st->tm_min << ":" << std::setw(2) << st->tm_sec;
 	os << "." << std::setw(3) << ms;
 }
+
+#endif
 
 std::string ToString(TLogLevel level)
 {
@@ -108,3 +121,4 @@ inline void Output2FILE::Output(const std::string& msg)
 typedef Log<Output2FILE> FILELog;
 #define LOG(level) FILELog().Get(level)
 
+#endif //LOGGING_H
