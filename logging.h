@@ -58,7 +58,7 @@ void Log<OutputPolicy>::NowTime()
 	int ms = tv.tv_usec / 1000;
 
 	os.fill('0');
-	os << std::setw(2) << st->tm_mday << "-" << std::setw(2) << st->tm_mon << "-" << std::setw(4) << st->tm_year + 1700 << " ";
+	os << std::setw(2) << st->tm_mday << "-" << std::setw(2) << st->tm_mon << "-" << std::setw(4) << st->tm_year + 1900 << " ";
 	os << std::setw(2) << st->tm_hour << ":" << std::setw(2) << st->tm_min << ":" << std::setw(2) << st->tm_sec;
 	os << "." << std::setw(3) << ms;
 }
