@@ -7,6 +7,7 @@
 #ifdef _WIN32
 	#include <time.h>
 #else
+	#include <stdio.h>
 	#include <sys/time.h>
 #endif
 
